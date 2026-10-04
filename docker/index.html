@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docker — Docker nima? | O'zbek tilida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2129;
+    --ink-soft:#3D5A63;
+    --muted:#6E888F;
+    --paper:#F1F4F3;
+    --paper-2:#FBFCFC;
+    --line:#D3DDDB;
+    --teal:#009485;
+    --teal-deep:#00695E;
+    --teal-bg:#E6F5F3;
+    --amber:#C77B22;
+    --amber-bg:#FBF3E6;
+    --red:#B03A32;
+    --red-bg:#FBEDEC;
+    --green:#1B7D3A;
+    --green-bg:#E8F5EC;
+    --blue:#2563EB;
+    --blue-bg:#EFF6FF;
+    --term:#0B1A20;
+    --term-2:#132A32;
+    --radius:3px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--paper);
+    background-image:
+      linear-gradient(rgba(0,148,133,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,148,133,.055) 1px, transparent 1px);
+    background-size:32px 32px;
+    color:var(--ink);
+    font-family:"Newsreader", Georgia, serif;
+    font-size:19px;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px;}
+
+  /* ── HERO ── */
+  header.hero{
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(251,252,252,.94), rgba(241,244,243,.55));
+    padding:64px 0 48px;
+  }
+  .eyebrow{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:12px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--teal);
+    font-weight:700;
+    margin-bottom:12px;
+  }
+  h1{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:clamp(28px,5vw,42px);
+    font-weight:700;
+    line-height:1.15;
+    color:var(--ink);
+    margin-bottom:12px;
+  }
+  h1 .accent{color:var(--teal);}
+  .subtitle{
+    font-size:20px;
+    color:var(--ink-soft);
+    max-width:640px;
+  }
+
+  /* ── HERO DIAGRAM ── */
+  .hero-diagram{
+    margin-top:36px;
+    background:var(--term);
+    border-radius:var(--radius);
+    padding:28px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .hd-box{
+    background:var(--term-2);
+    border:1.5px solid rgba(0,148,133,.45);
+    border-radius:var(--radius);
+    padding:14px 22px;
+    text-align:center;
+    min-width:140px;
+  }
+  .hd-box .hd-label{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:4px;
+  }
+  .hd-box .hd-value{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:17px;
+    color:#E8EEED;
+    font-weight:500;
+  }
+  .hd-arrow{
+    font-family:"JetBrains Mono",monospace;
+    color:var(--amber);
+    font-size:22px;
+    font-weight:700;
+  }
+
+  /* ── SECTIONS ── */
+  section{padding:48px 0;}
+  section + section{border-top:1px solid var(--line);}
+
+  h2{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:clamp(22px,3.5vw,28px);
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:20px;
+    line-height:1.25;
+  }
+  h3{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:20px;
+    font-weight:600;
+    color:var(--ink);
+    margin:28px 0 12px;
+  }
+
+  p{margin-bottom:16px;}
+  p + p{margin-top:0;}
+  strong{font-weight:600;}
+  a{color:var(--teal-deep);text-decoration:underline;text-underline-offset:2px;}
+
+  /* ── CODE BLOCKS ── */
+  pre{
+    background:var(--term);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    overflow-x:auto;
+    margin:20px 0 24px;
+    line-height:1.55;
+    position:relative;
+  }
+  pre code{
+    font-family:"JetBrains Mono",monospace;
+    font-size:14px;
+    color:#E8EEED;
+  }
+  code{
+    font-family:"JetBrains Mono",monospace;
+    font-size:.88em;
+    background:rgba(0,148,133,.1);
+    padding:2px 6px;
+    border-radius:3px;
+    color:var(--teal-deep);
+  }
+  pre code{background:none;padding:0;color:#E8EEED;border-radius:0;}
+  .code-label{
+    position:absolute;
+    top:8px;right:14px;
+    font-family:"JetBrains Mono",monospace;
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:rgba(232,238,237,.35);
+  }
+
+  /* syntax colors */
+  .cm{color:#6A9955;} /* comment */
+  .kw{color:#C586C0;} /* keyword */
+  .fn{color:#DCDCAA;} /* function */
+  .str{color:#CE9178;} /* string */
+  .fl{color:#569CD6;} /* flag/param */
+  .num{color:#B5CEA8;} /* number */
+  .op{color:#D4D4D4;} /* operator */
+  .img-name{color:#4EC9B0;} /* image name */
+  .tag-name{color:#9CDCFE;} /* tag */
+
+  /* ── CALLOUT BOXES ── */
+  .callout{
+    border-left:3.5px solid;
+    border-radius:var(--radius);
+    padding:18px 22px;
+    margin:24px 0;
+    font-size:17px;
+  }
+  .callout-title{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .callout.django{
+    border-color:var(--amber);
+    background:var(--amber-bg);
+  }
+  .callout.django .callout-title{color:var(--amber);}
+  .callout.tip{
+    border-color:var(--teal);
+    background:var(--teal-bg);
+  }
+  .callout.tip .callout-title{color:var(--teal-deep);}
+  .callout.warn{
+    border-color:var(--red);
+    background:var(--red-bg);
+  }
+  .callout.warn .callout-title{color:var(--red);}
+  .callout.info{
+    border-color:var(--blue);
+    background:var(--blue-bg);
+  }
+  .callout.info .callout-title{color:var(--blue);}
+
+  /* ── COMPARISON TABLE ── */
+  .compare-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:20px 0 28px;
+    font-size:16px;
+  }
+  .compare-table th{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:13px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    background:var(--term);
+    color:#E8EEED;
+    padding:12px 16px;
+    text-align:left;
+  }
+  .compare-table td{
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  .compare-table tr:nth-child(even) td{background:rgba(0,148,133,.04);}
+
+  /* ── VISUAL DIAGRAM (SVG-like boxes) ── */
+  .diagram-wrap{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:32px 20px;
+    margin:24px 0;
+    overflow-x:auto;
+  }
+  .flow-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .flow-box{
+    border:2px solid var(--teal);
+    border-radius:var(--radius);
+    padding:16px 20px;
+    text-align:center;
+    background:white;
+    min-width:130px;
+  }
+  .flow-box.dark{
+    background:var(--term);
+    border-color:var(--term);
+    color:#E8EEED;
+  }
+  .flow-box .fb-icon{font-size:28px;margin-bottom:6px;}
+  .flow-box .fb-label{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:14px;
+    font-weight:600;
+  }
+  .flow-box .fb-desc{
+    font-family:"Newsreader",serif;
+    font-size:13px;
+    color:var(--muted);
+    margin-top:4px;
+  }
+  .flow-box.dark .fb-desc{color:rgba(232,238,237,.6);}
+  .flow-arrow{
+    font-size:24px;
+    color:var(--amber);
+    font-weight:700;
+    font-family:"JetBrains Mono",monospace;
+  }
+
+  /* ── ANALOGY BOX ── */
+  .analogy{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px;
+    margin:24px 0;
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+  }
+  .analogy-icon{font-size:36px;flex-shrink:0;margin-top:4px;}
+  .analogy-text{flex:1;}
+  .analogy-text strong{
+    font-family:"Space Grotesk",sans-serif;
+    display:block;
+    margin-bottom:6px;
+    color:var(--teal-deep);
+  }
+
+  /* ── OUTPUT BLOCK ── */
+  .output{
+    background:#0D1F27;
+    border-left:3px solid var(--green);
+    border-radius:var(--radius);
+    padding:16px 20px;
+    margin:12px 0 24px;
+    font-family:"JetBrains Mono",monospace;
+    font-size:13px;
+    color:#A8D5A2;
+    line-height:1.6;
+    overflow-x:auto;
+    white-space:pre;
+  }
+  .output-label{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:11px;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:var(--green);
+    margin-bottom:4px;
+    display:block;
+  }
+
+  /* ── STEPS ── */
+  .step{
+    display:flex;
+    gap:18px;
+    margin:24px 0;
+    align-items:flex-start;
+  }
+  .step-num{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:white;
+    background:var(--teal);
+    width:32px;height:32px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    margin-top:2px;
+  }
+  .step-body{flex:1;}
+  .step-body h4{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:17px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+
+  /* ── QUIZ ── */
+  .quiz-section{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin:32px 0;
+  }
+  .quiz-header{
+    padding:16px 22px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    user-select:none;
+  }
+  .quiz-header h3{margin:0;font-size:18px;}
+  .quiz-header .toggle{
+    font-size:20px;
+    transition:transform .2s;
+    color:var(--teal);
+  }
+  .quiz-body{
+    padding:22px;
+    display:none;
+  }
+  .quiz-body.open{display:block;}
+  .q-item{margin-bottom:24px;}
+  .q-item:last-child{margin-bottom:0;}
+  .q-question{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;
+    font-size:16px;
+    margin-bottom:10px;
+  }
+  .q-options label{
+    display:block;
+    padding:8px 14px;
+    margin:4px 0;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-size:16px;
+    transition:background .15s;
+    border:1px solid transparent;
+  }
+  .q-options label:hover{background:rgba(0,148,133,.08);}
+  .q-options input{margin-right:8px;}
+  .q-feedback{
+    margin-top:8px;
+    padding:10px 14px;
+    border-radius:var(--radius);
+    font-size:15px;
+    display:none;
+  }
+  .q-feedback.correct{
+    background:var(--green-bg);
+    color:var(--green);
+    display:block;
+  }
+  .q-feedback.wrong{
+    background:var(--red-bg);
+    color:var(--red);
+    display:block;
+  }
+
+  /* ── HOMEWORK ── */
+  .homework{
+    background:linear-gradient(135deg, var(--term) 0%, #132A32 100%);
+    border-radius:var(--radius);
+    padding:32px 28px;
+    margin:32px 0;
+    color:#E8EEED;
+  }
+  .homework h2{color:#E8EEED;margin-bottom:8px;}
+  .homework .hw-subtitle{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:13px;
+    color:rgba(232,238,237,.5);
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .homework ol{
+    padding-left:20px;
+    margin:12px 0;
+  }
+  .homework li{
+    margin-bottom:10px;
+    color:rgba(232,238,237,.9);
+    font-size:17px;
+  }
+  .homework code{
+    background:rgba(0,148,133,.2);
+    color:var(--teal);
+  }
+
+  /* ── FOOTER ── */
+  footer{
+    text-align:center;
+    padding:40px 24px;
+    color:var(--muted);
+    font-size:14px;
+    border-top:1px solid var(--line);
+  }
+  footer a{color:var(--teal);}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:600px){
+    .hero-diagram{flex-direction:column;gap:8px;}
+    .hd-arrow{transform:rotate(90deg);}
+    .flow-row{flex-direction:column;gap:8px;}
+    .flow-arrow{transform:rotate(90deg);}
+    .analogy{flex-direction:column;}
+    pre{padding:16px 14px;}
+    pre code{font-size:13px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ═══════════════════════════════════════════ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Docker kursi · 01 / 12</div>
+    <h1><span class="accent">Docker</span> nima va nima uchun kerak?</h1>
+    <p class="subtitle">
+      Container tushunchasi, Dockerfile → Image → Container triniti,
+      Docker o'rnatish va birinchi <code>docker run</code> buyrug'i.
+    </p>
+
+    <!-- Trinity diagram -->
+    <div class="hero-diagram">
+      <div class="hd-box">
+        <div class="hd-label">Dockerfile</div>
+        <div class="hd-value">📄 Retsept</div>
+      </div>
+      <div class="hd-arrow">→</div>
+      <div class="hd-box">
+        <div class="hd-label">Image</div>
+        <div class="hd-value">📦 Tayyor quti</div>
+      </div>
+      <div class="hd-arrow">→</div>
+      <div class="hd-box">
+        <div class="hd-label">Container</div>
+        <div class="hd-value">🚀 Ishlab turgan dastur</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 1. MUAMMO -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Muammo: "Mening kompyuterimda ishlaydi!"</h2>
+
+    <p>
+      Siz Django loyihangizni yozdingiz. Kompyuteringizda hammasi zo'r ishlaydi.
+      Keyin serverdagi hamkasbingiz kodni olib ishga tushirmoqchi bo'ladi va...
+    </p>
+
+    <pre><code><span class="cm"># Sizning kompyuteringizda</span>
+Python <span class="num">3.12</span>, PostgreSQL <span class="num">16</span>, pip install -r requirements.txt ✅
+
+<span class="cm"># Hamkasbingizning kompyuterida</span>
+Python <span class="num">3.9</span>, PostgreSQL <span class="num">14</span>, pip install -r requirements.txt ❌
+<span class="str">ERROR: Could not find a version that satisfies the requirement...</span></code></pre>
+
+    <p>
+      Bu muammo har bir dasturchi hayotida bor. Python versiyasi boshqa.
+      PostgreSQL versiyasi boshqa. OS boshqa. Kutubxonalar boshqa versiyada.
+      Hatto bitta kompyuterda ikki xil loyiha bir-biriga to'sqinlik qiladi —
+      biri Python 3.9 so'raydi, boshqasi 3.12.
+    </p>
+
+    <div class="callout django">
+      <div class="callout-title">🐍 Django developerlarga tanish muammo</div>
+      <p style="margin:0;">
+        <code>virtualenv</code> bu muammoni <em>qisman</em> hal qiladi — faqat Python
+        paketlarini ajratadi. Lekin PostgreSQL, Redis, OS kutubxonalari,
+        <code>libpq-dev</code>, <code>libjpeg</code> kabilar — bular <code>venv</code>
+        ichida emas. Docker <strong>hammasini</strong> birga qadoqlaydi.
+      </p>
+    </div>
+
+    <p>
+      <strong>Docker yechim:</strong> Dastur + Python + PostgreSQL + barcha kutubxonalar = 
+      bitta "quti" (container). Bu qutini kim ochsa — bir xil natija oladi. 
+      Sizning kompyuteringizda, serverda, hamkasbingizda — farqi yo'q.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 2. CONTAINER VS VM -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Container vs Virtual Machine</h2>
+
+    <p>
+      "Quti" degan so'z eshitganda Virtual Machine (VirtualBox, VMWare) esga tushishi
+      mumkin. Lekin container butunlay boshqa narsa. Farqini tushunish — Docker'ni
+      tushunishning yarmi.
+    </p>
+
+    <div class="analogy">
+      <div class="analogy-icon">🏠</div>
+      <div class="analogy-text">
+        <strong>Virtual Machine = Alohida uy qurish</strong>
+        Har bir dastur uchun alohida uy qurasiz: poydevor, devor, tom, mebel.
+        Har bir uyning o'z elektr tizimi, suv tizimi bor. Xavfsiz, lekin juda og'ir — 
+        bitta uy qurish 5-10 minut, 2-4 GB joy oladi.
+      </div>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-icon">🏢</div>
+      <div class="analogy-text">
+        <strong>Container = Bitta binodagi alohida xonalar</strong>
+        Bitta binoning elektr va suv tizimidan foydalanasiz (host OS kerneli).
+        Har bir xona (container) alohida eshikka ega — biri boshqasiga kira olmaydi.
+        Lekin yangi xona ochish 1-2 soniya, 50-200 MB joy.
+      </div>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Virtual Machine</th>
+          <th>Container</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Ishga tushish</strong></td>
+          <td>1-5 daqiqa</td>
+          <td>1-2 soniya ⚡</td>
+        </tr>
+        <tr>
+          <td><strong>Hajmi</strong></td>
+          <td>2-10 GB</td>
+          <td>50-500 MB</td>
+        </tr>
+        <tr>
+          <td><strong>OS</strong></td>
+          <td>To'liq OS (o'z kerneli)</td>
+          <td>Host OS kernelini ishlatadi</td>
+        </tr>
+        <tr>
+          <td><strong>Izolyatsiya</strong></td>
+          <td>To'liq (alohida uy)</td>
+          <td>Process darajasida (alohida xona)</td>
+        </tr>
+        <tr>
+          <td><strong>Nechta?</strong></td>
+          <td>Bitta serverda 5-10 ta</td>
+          <td>Bitta serverda 50-100+ ta</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <div class="callout-title">💡 Xulosa</div>
+      <p style="margin:0;">
+        VM — butun OS ni ko'chiradi. Container — faqat dastur va uning
+        kutubxonalarini oladi, OS kernelini esa kompyuterdan "qarz" oladi.
+        Shuning uchun container tez va yengil.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 3. DOCKER'NING 3 TUSHI -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Docker'ning 3 asosiy tushunchasi</h2>
+
+    <p>
+      Docker bilan ishlash uchun faqat 3 ta so'z yetarli. Bu "triniti"ni
+      tushunganingizda — qolgan hamma narsa o'z joyiga tushadi.
+    </p>
+
+    <div class="diagram-wrap">
+      <div class="flow-row">
+        <div class="flow-box">
+          <div class="fb-icon">📄</div>
+          <div class="fb-label">Dockerfile</div>
+          <div class="fb-desc">Retsept — nima o'rnatish kerak</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">
+          <div class="fb-icon">📦</div>
+          <div class="fb-label">Image</div>
+          <div class="fb-desc">Tayyor quti — o'zgarmas shablon</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box dark">
+          <div class="fb-icon">🚀</div>
+          <div class="fb-label">Container</div>
+          <div class="fb-desc">Ishlab turgan nusxa</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>📄 Dockerfile — bu retsept</h3>
+    <p>
+      Oddiy matnli fayl. Ichida yozilgan: qaysi OS olish, qaysi paketlarni
+      o'rnatish, kodlarni qayerga ko'chirish, qanday buyruq bilan ishga tushirish.
+      Django developer uchun bu <code>requirements.txt</code> + o'rnatish skripti
+      birlashgani deb tasavvur qiling.
+    </p>
+
+    <pre><code><span class="code-label">Dockerfile</span>
+<span class="kw">FROM</span> <span class="img-name">python:3.12-slim</span>        <span class="cm"># Bazaviy image: Python 3.12</span>
+<span class="kw">WORKDIR</span> <span class="str">/app</span>                    <span class="cm"># Ish papkasi</span>
+<span class="kw">COPY</span> requirements.txt .          <span class="cm"># Faylni ko'chirish</span>
+<span class="kw">RUN</span> pip install -r requirements.txt  <span class="cm"># Paketlarni o'rnatish</span>
+<span class="kw">COPY</span> . .                          <span class="cm"># Barcha kodni ko'chirish</span>
+<span class="kw">CMD</span> [<span class="str">"python"</span>, <span class="str">"manage.py"</span>, <span class="str">"runserver"</span>, <span class="str">"0.0.0.0:8000"</span>]</code></pre>
+
+    <h3>📦 Image — bu tayyor quti</h3>
+    <p>
+      Dockerfile'dan <code>docker build</code> buyrug'i bilan Image yasaladi.
+      Image — <strong>o'zgarmas</strong> (read-only) shablon. Uni bir marta yasab,
+      istalgan joyda ishlatsa bo'ladi. Xuddi <code>.iso</code> fayl yoki 
+      <code>setup.exe</code> kabi — o'zi ishlamaydi, lekin undan ishlovchi narsani
+      yaratsa bo'ladi.
+    </p>
+
+    <pre><code><span class="cm"># Image yasash</span>
+$ docker build <span class="fl">-t</span> <span class="img-name">my-django-app</span> <span class="str">.</span>
+<span class="cm">#              ↑ nom berish       ↑ joriy papkadan</span></code></pre>
+
+    <h3>🚀 Container — bu ishlab turgan nusxa</h3>
+    <p>
+      Image'dan <code>docker run</code> buyrug'i bilan Container yaratiladi.
+      Container — Image'ning <strong>tirik nusxasi</strong>. Bitta Image'dan 
+      10 ta, 100 ta container ishga tushirsa bo'ladi — xuddi bitta <code>.exe</code>
+      fayldan bir nechta oynani ochganday.
+    </p>
+
+    <pre><code><span class="cm"># Container ishga tushirish</span>
+$ docker run <span class="fl">-p</span> <span class="num">8000</span>:<span class="num">8000</span> <span class="img-name">my-django-app</span>
+<span class="cm">#           ↑ port ulash    ↑ qaysi image'dan</span></code></pre>
+
+    <div class="callout django">
+      <div class="callout-title">🔄 Django tilida aytganda</div>
+      <p style="margin:0;">
+        <code>Dockerfile</code> = <code>requirements.txt</code> + deploy skripti<br>
+        <code>Image</code> = Tayyor server snapshoti (Python, paketlar, kod — hammasi ichida)<br>
+        <code>Container</code> = <code>python manage.py runserver</code> ishlab turgan holat
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 4. DOCKER O'RNATISH -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Docker o'rnatish</h2>
+
+    <p>
+      Docker ikki ko'rinishda keladi: <strong>Docker Desktop</strong> (Windows/Mac uchun 
+      grafik interfeys bilan) va <strong>Docker Engine</strong> (Linux uchun faqat terminal).
+      Ikkalasi ham bir xil <code>docker</code> buyruqlarini ishlatadi.
+    </p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Windows / Mac</h4>
+        <p>
+          <a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com/products/docker-desktop</a>
+          sahifasidan yuklab o'rnating. O'rnatgandan keyin Docker Desktop
+          ilovasini ishga tushiring — u fonda ishlaydi.
+        </p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Linux (Ubuntu/Debian)</h4>
+        <pre><code><span class="cm"># Eski versiyalarni o'chirish</span>
+$ sudo apt remove docker docker-engine docker.io containerd runc
+
+<span class="cm"># Docker rasmiy repozitoriyasini qo'shish</span>
+$ sudo apt update
+$ sudo apt install ca-certificates curl gnupg
+$ sudo install -m 0755 -d /etc/apt/keyrings
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+    sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+$ echo \
+  <span class="str">"deb [arch=$(dpkg --print-architecture) \
+  signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo $VERSION_CODENAME) stable"</span> | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+<span class="cm"># Docker'ni o'rnatish</span>
+$ sudo apt update
+$ sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+<span class="cm"># sudo siz ishlatish uchun</span>
+$ sudo usermod -aG docker $USER
+<span class="cm"># Keyin logout/login qiling</span></code></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Tekshirish</h4>
+        <pre><code>$ docker --version
+<span class="str">Docker version 27.x.x, build xxxxxxx</span>
+
+$ docker run hello-world</code></pre>
+        <span class="output-label">Natija</span>
+        <div class="output">Hello from Docker!
+This message shows that your installation
+appears to be working correctly.
+...</div>
+        <p>
+          Agar <code>hello-world</code> muvaffaqiyatli chiqsa — Docker ishlayapti!
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 5. BIRINCHI AMALIYOT -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Birinchi amaliyot: container ichida Python</h2>
+
+    <p>
+      Keling, Docker'ning kuchini ko'ramiz. Sizning kompyuteringizda Python 
+      3.9 bo'lsin. Lekin sizga <em>hozir</em> Python 3.12 kerak — 
+      o'rnatmasdan, hech narsa buzmasdan.
+    </p>
+
+    <pre><code><span class="cm"># Python 3.12 container ichida ishga tushirish</span>
+$ docker run <span class="fl">-it</span> <span class="img-name">python:3.12-slim</span>
+<span class="cm">#            ↑  interactive + terminal</span></code></pre>
+
+    <span class="output-label">Natija</span>
+    <div class="output">Unable to find image 'python:3.12-slim' locally
+3.12-slim: Pulling from library/python
+...
+Status: Downloaded newer image for python:3.12-slim
+
+Python 3.12.x (main, ...) 
+[GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license"
+>>> </div>
+
+    <p>
+      Siz hozir <strong>container ichida</strong>siz! Bu sizning kompyuteringiz emas — 
+      bu alohida Linux muhiti, ichida Python 3.12 o'rnatilgan. Sinab ko'ring:
+    </p>
+
+    <pre><code><span class="cm"># Container ichida</span>
+>>> <span class="kw">import</span> sys
+>>> sys.version
+<span class="str">'3.12.x ...'</span>
+
+>>> <span class="kw">import</span> os
+>>> os.listdir(<span class="str">'/'</span>)
+<span class="str">['bin', 'boot', 'dev', 'etc', 'home', 'lib', ...]</span>  <span class="cm"># Linux!</span>
+
+>>> exit()  <span class="cm"># Containerdan chiqish</span></code></pre>
+
+    <div class="callout tip">
+      <div class="callout-title">💡 Nima sodir bo'ldi?</div>
+      <p style="margin:0;">
+        <code>docker run -it python:3.12-slim</code> buyrug'i quyidagilarni qildi:<br><br>
+        1. <strong>python:3.12-slim</strong> image'ini Docker Hub'dan yuklab oldi (birinchi safar)<br>
+        2. Bu image'dan yangi <strong>container</strong> yaratdi<br>
+        3. Container ichida <strong>Python interpretator</strong>ini ishga tushirdi<br>
+        4. <code>-it</code> flaglari orqali sizni container terminaliga uladi
+      </p>
+    </div>
+
+    <h3>Docker Hub — image'lar do'koni</h3>
+
+    <p>
+      <code>python:3.12-slim</code> qayerdan keldi? <strong>Docker Hub</strong> — bu
+      tayyor image'larning ommaviy ombori. Xuddi PyPI (pip) Python paketlar uchun
+      bo'lganidek, Docker Hub image'lar uchun.
+    </p>
+
+    <pre><code><span class="cm"># Mashhur image'lar</span>
+$ docker run <span class="img-name">postgres:16</span>       <span class="cm"># PostgreSQL 16</span>
+$ docker run <span class="img-name">redis:7</span>           <span class="cm"># Redis 7</span>
+$ docker run <span class="img-name">nginx:latest</span>      <span class="cm"># Nginx web server</span>
+$ docker run <span class="img-name">node:20-slim</span>      <span class="cm"># Node.js 20</span></code></pre>
+
+    <div class="callout django">
+      <div class="callout-title">🔄 Django tilida aytganda</div>
+      <p style="margin:0;">
+        <code>pip install django</code> → PyPI'dan Django'ni yuklab oladi<br>
+        <code>docker run postgres:16</code> → Docker Hub'dan PostgreSQL'ni yuklab, ishga tushiradi<br><br>
+        Farqi: <code>pip</code> faqat Python paketni oladi. <code>docker run</code> — 
+        <strong>butun muhit</strong>ni (OS + dastur + sozlamalar) oladi va ishga tushiradi.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 6. ASOSIY BUYRUQLAR -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Eng kerakli 10 ta Docker buyrug'i</h2>
+
+    <p>
+      Docker'da yuzlab buyruq bor, lekin kundalik ishda 10 tasi yetarli. 
+      Hozircha hammasini yodlash shart emas — bittadan sinab ko'ring.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Buyruq</th>
+          <th>Nima qiladi</th>
+          <th>Misol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>docker run</code></td>
+          <td>Image'dan container yaratib ishga tushiradi</td>
+          <td><code>docker run nginx</code></td>
+        </tr>
+        <tr>
+          <td><code>docker ps</code></td>
+          <td>Ishlab turgan container'lar ro'yxati</td>
+          <td><code>docker ps</code></td>
+        </tr>
+        <tr>
+          <td><code>docker ps -a</code></td>
+          <td>Barcha container'lar (to'xtaganlar ham)</td>
+          <td><code>docker ps -a</code></td>
+        </tr>
+        <tr>
+          <td><code>docker stop</code></td>
+          <td>Container'ni to'xtatish</td>
+          <td><code>docker stop abc123</code></td>
+        </tr>
+        <tr>
+          <td><code>docker rm</code></td>
+          <td>Container'ni o'chirish</td>
+          <td><code>docker rm abc123</code></td>
+        </tr>
+        <tr>
+          <td><code>docker images</code></td>
+          <td>Yuklab olingan image'lar ro'yxati</td>
+          <td><code>docker images</code></td>
+        </tr>
+        <tr>
+          <td><code>docker rmi</code></td>
+          <td>Image'ni o'chirish</td>
+          <td><code>docker rmi nginx</code></td>
+        </tr>
+        <tr>
+          <td><code>docker build</code></td>
+          <td>Dockerfile'dan image yasash</td>
+          <td><code>docker build -t myapp .</code></td>
+        </tr>
+        <tr>
+          <td><code>docker logs</code></td>
+          <td>Container loglarini ko'rish</td>
+          <td><code>docker logs abc123</code></td>
+        </tr>
+        <tr>
+          <td><code>docker exec</code></td>
+          <td>Ishlab turgan container ichida buyruq bajarish</td>
+          <td><code>docker exec -it abc123 bash</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Amaliy mashq: container'lar bilan ishlash</h3>
+
+    <pre><code><span class="cm"># 1. Nginx web server'ni fonda ishga tushirish</span>
+$ docker run <span class="fl">-d</span> <span class="fl">--name</span> <span class="tag-name">my-web</span> <span class="fl">-p</span> <span class="num">8080</span>:<span class="num">80</span> <span class="img-name">nginx</span>
+<span class="cm">#            ↑     ↑              ↑           ↑</span>
+<span class="cm">#         fonda  nom berish   port ulash    image</span>
+
+<span class="cm"># 2. Tekshirish — brauzerda localhost:8080 oching</span>
+<span class="cm"># Nginx "Welcome" sahifasi ko'rinadi!</span>
+
+<span class="cm"># 3. Ishlab turgan container'larni ko'rish</span>
+$ docker ps
+CONTAINER ID   IMAGE   STATUS        PORTS                  NAMES
+a1b2c3d4e5f6   nginx   Up 2 min      0.0.0.0:8080->80/tcp   my-web
+
+<span class="cm"># 4. Container ichiga kirish</span>
+$ docker exec <span class="fl">-it</span> <span class="tag-name">my-web</span> bash
+root@a1b2c3d4e5f6:/# ls /usr/share/nginx/html/
+<span class="str">50x.html  index.html</span>
+root@a1b2c3d4e5f6:/# exit
+
+<span class="cm"># 5. Loglarni ko'rish</span>
+$ docker logs <span class="tag-name">my-web</span>
+
+<span class="cm"># 6. To'xtatish va o'chirish</span>
+$ docker stop <span class="tag-name">my-web</span>
+$ docker rm <span class="tag-name">my-web</span></code></pre>
+
+    <div class="callout info">
+      <div class="callout-title">🔑 Flag'lar eslatmasi</div>
+      <p style="margin:0;">
+        <code>-d</code> = detached (fonda ishlaydi, terminalni band qilmaydi)<br>
+        <code>-it</code> = interactive + terminal (container ichiga kirasiz)<br>
+        <code>-p 8080:80</code> = host'ning 8080 portini container'ning 80 portiga ulash<br>
+        <code>--name my-web</code> = container'ga odam tushunadigan nom berish
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 7. PORT MAPPING TUSHUNTIRISH -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Port mapping — tashqi dunyo bilan aloqa</h2>
+
+    <p>
+      Container — izolyatsiyalangan muhit. U ichida port 80'da ishlayotgan bo'lsa ham,
+      tashqaridan (brauzerdan) ko'rinmaydi. Port mapping orqali "eshik" ochamiz.
+    </p>
+
+    <div class="diagram-wrap">
+      <div class="flow-row">
+        <div class="flow-box">
+          <div class="fb-icon">🌐</div>
+          <div class="fb-label">Brauzer</div>
+          <div class="fb-desc">localhost:8080</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">
+          <div class="fb-icon">💻</div>
+          <div class="fb-label">Host (sizning OS)</div>
+          <div class="fb-desc">port 8080</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box dark">
+          <div class="fb-icon">📦</div>
+          <div class="fb-label">Container</div>
+          <div class="fb-desc">port 80 (Nginx)</div>
+        </div>
+      </div>
+    </div>
+
+    <pre><code><span class="cm"># -p HOST_PORT:CONTAINER_PORT</span>
+
+<span class="cm"># Nginx (container ichida 80) → brauzerda 8080</span>
+$ docker run <span class="fl">-d</span> <span class="fl">-p</span> <span class="num">8080</span>:<span class="num">80</span> <span class="img-name">nginx</span>
+
+<span class="cm"># Django (container ichida 8000) → brauzerda 8000</span>
+$ docker run <span class="fl">-d</span> <span class="fl">-p</span> <span class="num">8000</span>:<span class="num">8000</span> <span class="img-name">my-django-app</span>
+
+<span class="cm"># PostgreSQL (container ichida 5432) → host'da 5433</span>
+<span class="cm"># (agar host'da allaqachon PG 5432 da ishlayotgan bo'lsa)</span>
+$ docker run <span class="fl">-d</span> <span class="fl">-p</span> <span class="num">5433</span>:<span class="num">5432</span> <span class="img-name">postgres:16</span></code></pre>
+
+    <div class="callout django">
+      <div class="callout-title">🔄 Django tilida aytganda</div>
+      <p style="margin:0;">
+        <code>python manage.py runserver 0.0.0.0:8000</code> — Django 8000-portda tinglaydi.<br>
+        Container ichida ham xuddi shunday. Lekin tashqaridan ko'rinishi uchun
+        <code>-p</code> bilan "eshik" ochish kerak. <code>-p 8000:8000</code> degani:
+        "hostdagi 8000-portga kelgan so'rovni container ichidagi 8000-portga yo'naltir."
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 8. DOCKER HUB IMAGE TANLASH -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Image tanlash: tag'lar va variantlar</h2>
+
+    <p>
+      Docker Hub'dagi har bir image bir necha <strong>tag</strong> (versiya) bilan keladi.
+      To'g'ri tag tanlash — production'da muhim.
+    </p>
+
+    <pre><code><span class="cm"># Image nomi formati:</span>
+<span class="img-name">image_nomi</span>:<span class="tag-name">tag</span>
+
+<span class="cm"># Misollar:</span>
+<span class="img-name">python</span>:<span class="tag-name">3.12</span>          <span class="cm"># To'liq Python 3.12 (Debian-based, ~900MB)</span>
+<span class="img-name">python</span>:<span class="tag-name">3.12-slim</span>     <span class="cm"># Kichiklashtirilgan (~150MB) ✅ Tavsiya</span>
+<span class="img-name">python</span>:<span class="tag-name">3.12-alpine</span>   <span class="cm"># Eng kichik (~50MB), lekin ba'zi paketlar bilan muammo</span>
+<span class="img-name">python</span>:<span class="tag-name">latest</span>        <span class="cm"># Eng oxirgi versiya — ⚠️ ISHLATMANG</span></code></pre>
+
+    <div class="callout warn">
+      <div class="callout-title">⚠️ latest tag'ini ishlatmang</div>
+      <p style="margin:0;">
+        <code>python:latest</code> bugun 3.12, ertaga 3.13 bo'lishi mumkin.
+        Sizning loyihangiz ertaga ishlamay qolishi mumkin va sababini topish qiyin.
+        <strong>Har doim aniq versiya yozing:</strong> <code>python:3.12-slim</code>
+      </p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Tag turi</th>
+          <th>Hajmi</th>
+          <th>Qachon ishlatiladi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>3.12</code> (to'liq)</td>
+          <td>~900 MB</td>
+          <td>C extension'lar ko'p bo'lganda</td>
+        </tr>
+        <tr>
+          <td><code>3.12-slim</code> ✅</td>
+          <td>~150 MB</td>
+          <td>Aksariyat Django loyihalar uchun</td>
+        </tr>
+        <tr>
+          <td><code>3.12-alpine</code></td>
+          <td>~50 MB</td>
+          <td>Hajm muhim bo'lganda (lekin ehtiyot bo'ling)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 9. XULOSA DIAGRAMMA -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <h2>Bugun nimalarni o'rgandik?</h2>
+
+    <div class="diagram-wrap">
+      <div style="text-align:center;">
+        <div style="display:inline-block;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:15px;line-height:2.2;">
+          ✅ Docker nima va qanday muammoni hal qiladi<br>
+          ✅ Container vs Virtual Machine farqi<br>
+          ✅ Dockerfile → Image → Container triniti<br>
+          ✅ Docker o'rnatish va tekshirish<br>
+          ✅ <code>docker run</code>, <code>docker ps</code>, <code>docker stop</code>, <code>docker rm</code><br>
+          ✅ Port mapping (<code>-p HOST:CONTAINER</code>)<br>
+          ✅ Docker Hub va image tag'lari<br>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-title">📌 Keyingi darsda</div>
+      <p style="margin:0;">
+        <strong>02-dars: Dockerfile yozish</strong> — o'z Django loyihangiz uchun
+        Dockerfile yozamiz. Layer tizimi, <code>.dockerignore</code>, 
+        <code>COPY</code> vs <code>ADD</code>, va build jarayonini batafsil ko'ramiz.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- QUIZ -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <div class="quiz-section">
+      <div class="quiz-header" onclick="toggleQuiz()">
+        <h3>🧪 O'zingizni tekshiring</h3>
+        <span class="toggle" id="quizToggle">▼</span>
+      </div>
+      <div class="quiz-body" id="quizBody">
+
+        <!-- Q1 -->
+        <div class="q-item">
+          <div class="q-question">1. Container va VM ning asosiy farqi nima?</div>
+          <div class="q-options" id="q1">
+            <label><input type="radio" name="q1" value="a" onchange="checkQ('q1','c')"> Container ham VM ham bir xil ishlaydi</label>
+            <label><input type="radio" name="q1" value="b" onchange="checkQ('q1','c')"> Container o'z OS kernelini o'rnatadi</label>
+            <label><input type="radio" name="q1" value="c" onchange="checkQ('q1','c')"> Container host OS kernelini ishlatadi, VM esa o'z kernelini oladi</label>
+            <label><input type="radio" name="q1" value="d" onchange="checkQ('q1','c')"> VM tezroq ishlaydi</label>
+          </div>
+          <div class="q-feedback" id="q1-fb"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-item">
+          <div class="q-question">2. Dockerfile → Image → Container ketma-ketligida Image nima?</div>
+          <div class="q-options" id="q2">
+            <label><input type="radio" name="q2" value="a" onchange="checkQ('q2','b')"> Ishlab turgan dastur</label>
+            <label><input type="radio" name="q2" value="b" onchange="checkQ('q2','b')"> O'zgarmas (read-only) shablon</label>
+            <label><input type="radio" name="q2" value="c" onchange="checkQ('q2','b')"> Matnli fayl (retsept)</label>
+            <label><input type="radio" name="q2" value="d" onchange="checkQ('q2','b')"> Docker Hub sahifasi</label>
+          </div>
+          <div class="q-feedback" id="q2-fb"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-item">
+          <div class="q-question">3. <code>docker run -d -p 3000:80 nginx</code> buyrug'ida <code>-p 3000:80</code> nima qiladi?</div>
+          <div class="q-options" id="q3">
+            <label><input type="radio" name="q3" value="a" onchange="checkQ('q3','c')"> Container ichida 3000-portni ochadi</label>
+            <label><input type="radio" name="q3" value="b" onchange="checkQ('q3','c')"> Nginx'ni 3000-portda ishga tushiradi</label>
+            <label><input type="radio" name="q3" value="c" onchange="checkQ('q3','c')"> Host'ning 3000-portini container'ning 80-portiga ulaydi</label>
+            <label><input type="radio" name="q3" value="d" onchange="checkQ('q3','c')"> 3000 ta container ishga tushiradi</label>
+          </div>
+          <div class="q-feedback" id="q3-fb"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-item">
+          <div class="q-question">4. Nima uchun <code>python:latest</code> o'rniga <code>python:3.12-slim</code> ishlatish kerak?</div>
+          <div class="q-options" id="q4">
+            <label><input type="radio" name="q4" value="a" onchange="checkQ('q4','b')"> latest tezroq ishlaydi</label>
+            <label><input type="radio" name="q4" value="b" onchange="checkQ('q4','b')"> latest o'zgarib qolishi mumkin va loyiha buziladi</label>
+            <label><input type="radio" name="q4" value="c" onchange="checkQ('q4','b')"> slim image'lar ishlamaydi</label>
+            <label><input type="radio" name="q4" value="d" onchange="checkQ('q4','b')"> Farqi yo'q, ikkalasi bir xil</label>
+          </div>
+          <div class="q-feedback" id="q4-fb"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-item">
+          <div class="q-question">5. Ishlab turgan container ichiga kirib buyruq bajarish uchun qaysi buyruq ishlatiladi?</div>
+          <div class="q-options" id="q5">
+            <label><input type="radio" name="q5" value="a" onchange="checkQ('q5','d')"> docker run</label>
+            <label><input type="radio" name="q5" value="b" onchange="checkQ('q5','d')"> docker logs</label>
+            <label><input type="radio" name="q5" value="c" onchange="checkQ('q5','d')"> docker ps</label>
+            <label><input type="radio" name="q5" value="d" onchange="checkQ('q5','d')"> docker exec</label>
+          </div>
+          <div class="q-feedback" id="q5-fb"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HOMEWORK -->
+<!-- ═══════════════════════════════════════════ -->
+<section>
+  <div class="wrap">
+    <div class="homework">
+      <div class="hw-subtitle">Amaliy topshiriq</div>
+      <h2>🏗️ Mustaqil mashq</h2>
+      <p>
+        Quyidagilarni terminalda bajarib, natijalarini ko'ring.
+        Har bir buyruqdan keyin <code>docker ps</code> va <code>docker ps -a</code>
+        bilan holatni tekshiring.
+      </p>
+      <ol>
+        <li>
+          <code>docker run hello-world</code> — Docker o'rnatilganini tekshiring
+        </li>
+        <li>
+          <code>docker run -it python:3.12-slim</code> — Python container ichida
+          <code>2 + 2</code>, <code>import this</code> yozing, keyin <code>exit()</code>
+        </li>
+        <li>
+          <code>docker run -d --name test-nginx -p 9090:80 nginx</code> — 
+          Nginx'ni ishga tushirib, brauzerda <code>localhost:9090</code> oching
+        </li>
+        <li>
+          <code>docker exec -it test-nginx bash</code> — container ichiga kiring,
+          <code>cat /usr/share/nginx/html/index.html</code> bilan sahifani ko'ring
+        </li>
+        <li>
+          <code>docker logs test-nginx</code> — loglarni ko'ring
+        </li>
+        <li>
+          <code>docker stop test-nginx && docker rm test-nginx</code> — 
+          tozalab tashlang
+        </li>
+        <li>
+          <code>docker images</code> bilan yuklab olingan image'larni ko'ring.
+          <code>docker rmi hello-world</code> bilan keraksizini o'chiring.
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════ -->
+<footer>
+  <div class="wrap">
+    Docker kursi · 01 / 12 · O'zbek tilida<br>
+    Keyingi dars: <strong>02 — Dockerfile yozish</strong><br>
+    <small style="color:var(--muted);">Manba: Docker rasmiy hujjatlari, Bret Fisher, KodeKloud, Nigel Poulton</small>
+  </div>
+</footer>
+
+<script>
+function toggleQuiz(){
+  const b=document.getElementById('quizBody');
+  const t=document.getElementById('quizToggle');
+  b.classList.toggle('open');
+  t.textContent=b.classList.contains('open')?'▲':'▼';
+}
+
+const answers={
+  q1:{
+    correct:'Container host OS kernelini ishlatadi — shuning uchun tez va yengil. VM esa to\'liq alohida OS yuklab oladi.',
+    wrong:'Noto\'g\'ri. Container va VM asosiy farqi — kernel ishlatishda. Container host OS kernelini "qarz oladi".'
+  },
+  q2:{
+    correct:'To\'g\'ri! Image — read-only shablon. Undan istalgancha container (tirik nusxa) yaratish mumkin.',
+    wrong:'Noto\'g\'ri. Image — Dockerfile dan yasalgan o\'zgarmas shablon. Ishlab turgan dastur — bu Container.'
+  },
+  q3:{
+    correct:'To\'g\'ri! HOST_PORT:CONTAINER_PORT formati. Brauzerda localhost:3000 ochsangiz — container ichidagi 80-portga boradi.',
+    wrong:'Noto\'g\'ri. -p 3000:80 degani: host\'ning 3000-portiga kelgan trafikni container\'ning 80-portiga yo\'naltiradi.'
+  },
+  q4:{
+    correct:'To\'g\'ri! latest tag bugun 3.12, ertaga 3.13 bo\'lishi mumkin. Aniq versiya yozsangiz — loyihangiz barqaror bo\'ladi.',
+    wrong:'Noto\'g\'ri. latest har safar o\'zgarishi mumkin. Bugun ishlayotgan kod ertaga buzilishi mumkin.'
+  },
+  q5:{
+    correct:'To\'g\'ri! docker exec -it CONTAINER_NOMI bash — ishlab turgan container ichiga kirib, buyruq bajarasiz.',
+    wrong:'Noto\'g\'ri. docker exec — ishlab turgan container ichida buyruq bajarish uchun. docker run esa yangi container yaratadi.'
+  }
+};
+
+function checkQ(qId,correctVal){
+  const selected=document.querySelector(`input[name="${qId}"]:checked`);
+  if(!selected)return;
+  const fb=document.getElementById(qId+'-fb');
+  if(selected.value===correctVal){
+    fb.className='q-feedback correct';
+    fb.textContent='✅ '+answers[qId].correct;
+  }else{
+    fb.className='q-feedback wrong';
+    fb.textContent='❌ '+answers[qId].wrong;
+  }
+}
+</script>
+
+</body>
+</html>
